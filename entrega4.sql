@@ -112,9 +112,6 @@ CREATE TABLE motorista (
     cpf CHAR(11),
     data_nascimento DATE,
     telefone VARCHAR(20),
-    numero_cnh VARCHAR(20),
-    categoria_cnh CHAR(2),
-    validade_cnh DATE,
     status VARCHAR(50)
 );
 
@@ -133,11 +130,7 @@ CREATE TABLE endereco (
     cep CHAR(8),
     bairro VARCHAR(100),
     cidade VARCHAR(100),
-    uf CHAR(2),
-    id_motorista INT,
-    id_rota INT,
-    FOREIGN KEY (id_motorista) REFERENCES motorista(id_motorista),
-    FOREIGN KEY (id_rota) REFERENCES rota(id_rota)
+    uf CHAR(2)
 );
 
 ALTER TABLE motorista
@@ -397,17 +390,17 @@ INSERT INTO treinamento (carga_horaria, descricao, nome) VALUES
 (4,  'Técnicas de comunicação e atendimento ao cliente',              'Relacionamento com o Cliente'),
 (6,  'Gestão do tempo e planejamento de jornada do motorista',        'Gestão de Jornada');
 
-INSERT INTO motorista (id_endereco, nome, cpf, data_nascimento, telefone, numero_cnh, categoria_cnh, validade_cnh, status) VALUES
-(NULL, 'Carlos Eduardo Souza',    '12345678901', '1985-06-15', '(35) 99801-2345', '01234567890', 'D', '2028-03-15', 'Ativo'),
-(NULL, 'Marcos Antônio Pereira',  '23456789012', '1979-11-22', '(35) 99802-3456', '12345678901', 'E', '2027-07-20', 'Ativo'),
-(NULL, 'José Roberto Lima',       '34567890123', '1990-03-08', '(35) 99803-4567', '23456789012', 'D', '2029-11-05', 'Ativo'),
-(NULL, 'Anderson Luís Ferreira',  '45678901234', '1983-09-17', '(35) 99804-5678', '34567890123', 'C', '2026-09-30', 'Afastado'),
-(NULL, 'Ricardo Gomes da Silva',  '56789012345', '1975-01-30', '(35) 99805-6789', '45678901234', 'D', '2028-01-18', 'Ativo'),
-(NULL, 'Fábio Henrique Rocha',    '67890123456', '1988-07-04', '(35) 99806-7890', '56789012345', 'E', '2030-06-22', 'Ativo'),
-(NULL, 'Leandro Aparecido Costa', '78901234567', '1992-12-19', '(35) 99807-8901', '67890123456', 'D', '2027-04-10', 'Ativo'),
-(NULL, 'Paulo César Martins',     '89012345678', '1980-04-25', '(35) 99808-9012', '78901234567', 'D', '2029-08-14', 'Ativo'),
-(NULL, 'Rogério de Oliveira',     '90123456789', '1977-08-11', '(35) 99809-0123', '89012345678', 'C', '2026-12-01', 'Inativo'),
-(NULL, 'Bruno Henrique Alves',    '01234567890', '1995-02-28', '(35) 99810-1234', '90123456789', 'E', '2031-02-27', 'Ativo');
+INSERT INTO motorista (id_endereco, nome, cpf, data_nascimento, telefone, status) VALUES
+(NULL, 'Carlos Eduardo Souza',    '12345678901', '1985-06-15', '(35) 99801-2345', 'Ativo'),
+(NULL, 'Marcos Antônio Pereira',  '23456789012', '1979-11-22', '(35) 99802-3456', 'Ativo'),
+(NULL, 'José Roberto Lima',       '34567890123', '1990-03-08', '(35) 99803-4567', 'Ativo'),
+(NULL, 'Anderson Luís Ferreira',  '45678901234', '1983-09-17', '(35) 99804-5678', 'Afastado'),
+(NULL, 'Ricardo Gomes da Silva',  '56789012345', '1975-01-30', '(35) 99805-6789', 'Ativo'),
+(NULL, 'Fábio Henrique Rocha',    '67890123456', '1988-07-04', '(35) 99806-7890', 'Ativo'),
+(NULL, 'Leandro Aparecido Costa', '78901234567', '1992-12-19', '(35) 99807-8901', 'Ativo'),
+(NULL, 'Paulo César Martins',     '89012345678', '1980-04-25', '(35) 99808-9012', 'Ativo'),
+(NULL, 'Rogério de Oliveira',     '90123456789', '1977-08-11', '(35) 99809-0123', 'Inativo'),
+(NULL, 'Bruno Henrique Alves',    '01234567890', '1995-02-28', '(35) 99810-1234', 'Ativo');
 
 INSERT INTO rota (id_endereco_origem, id_endereco_destino, tempo_estimado, distancia) VALUES
 (NULL, NULL, '02:30:00', 180.5),
@@ -421,17 +414,17 @@ INSERT INTO rota (id_endereco_origem, id_endereco_destino, tempo_estimado, dista
 (NULL, NULL, '00:40:00',  42.0),
 (NULL, NULL, '05:00:00', 420.0);
 	
-INSERT INTO endereco (logradouro, numero, cep, bairro, cidade, uf, id_motorista, id_rota) VALUES
-('Rua das Acácias',           123, '37700000', 'Centro',           'Poços de Caldas',  'MG', 1,  1),
-('Avenida Brasil',            456, '37701000', 'Jardim das Rosas', 'Poços de Caldas',  'MG', 2,  2),
-('Rua Minas Gerais',          789, '37702000', 'Vila Nova',        'Poços de Caldas',  'MG', 3,  3),
-('Rua São Paulo',             321, '37703000', 'Novo Horizonte',   'Poços de Caldas',  'MG', 4,  4),
-('Avenida Prefeito Tuany',    654, '37704000', 'Jardim Centenário','Poços de Caldas',  'MG', 5,  5),
-('Rua Pinheiro Chagas',       987, '37705000', 'São João',         'Andradas',         'MG', 6,  6),
-('Avenida Dona Alexandrina',  147, '37801000', 'Centro',           'Varginha',         'MG', 7,  7),
-('Rua Sete de Setembro',      258, '37902000', 'Centro',           'Alfenas',          'MG', 8,  8),
-('Rua Major Pinheiro Fróis',  369, '37470000', 'Centro',           'Itajubá',          'MG', 9,  9),
-('Avenida Wenceslau Braz',    741, '37500000', 'Centro',           'Itajubá',          'MG', 10, 10);
+INSERT INTO endereco (logradouro, numero, cep, bairro, cidade, uf) VALUES
+('Rua das Acácias',           123, '37700000', 'Centro',           'Poços de Caldas',  'MG'),
+('Avenida Brasil',            456, '37701000', 'Jardim das Rosas', 'Poços de Caldas',  'MG'),
+('Rua Minas Gerais',          789, '37702000', 'Vila Nova',        'Poços de Caldas',  'MG'),
+('Rua São Paulo',             321, '37703000', 'Novo Horizonte',   'Poços de Caldas',  'MG'),
+('Avenida Prefeito Tuany',    654, '37704000', 'Jardim Centenário','Poços de Caldas',  'MG'),
+('Rua Pinheiro Chagas',       987, '37705000', 'São João',         'Andradas',         'MG'),
+('Avenida Dona Alexandrina',  147, '37801000', 'Centro',           'Varginha',         'MG'),
+('Rua Sete de Setembro',      258, '37902000', 'Centro',           'Alfenas',          'MG'),
+('Rua Major Pinheiro Fróis',  369, '37470000', 'Centro',           'Itajubá',          'MG'),
+('Avenida Wenceslau Braz',    741, '37500000', 'Centro',           'Itajubá',          'MG');
 
 UPDATE motorista SET id_endereco = 1  WHERE id_motorista = 1;
 UPDATE motorista SET id_endereco = 2  WHERE id_motorista = 2;
@@ -527,14 +520,11 @@ INSERT INTO utiliza (id_viagem, id_veiculo) VALUES
 --  Consultas Q1 a Q10
 ---------------
 
--- Q1 - Motoristas Ativos com a CNH válida
+-- Q1 - Motoristas Ativos
 SELECT 	nome, 
-		cpf, 
-		categoria_cnh, 
-		validade_cnh
+		cpf
 FROM 	motorista
-WHERE 	status ILIKE 'Ativo'
-AND 	validade_cnh > current_date;
+WHERE 	status ILIKE 'Ativo';
 
 -- Q2 - Manutenções corretivas ainda abertas (sem data de saída)
 SELECT 	id_manutencao,
@@ -548,7 +538,6 @@ WHERE 	tipo_manutencao ILIKE 'Corretiva'
   
 -- Q3 - Motoristas com as viagens que realizaram, incluindo datas e status
 SELECT 	A.nome,
-		A.categoria_cnh,
 		C.data_saida,
 		C.data_retorno,
 		C.status
@@ -629,14 +618,16 @@ SELECT 	A.nome,
 		COUNT(DISTINCT B.id_ocorrencia) AS total_ocorrencias,
 		COUNT(DISTINCT C.id_multa)      AS total_multas,
 		SUM(D.pontos)                  AS total_pontos_multa,
-		A.validade_cnh,
+		F.data_validade,
 		CASE
-			WHEN A.validade_cnh < CURRENT_DATE + 90 THEN 'CNH a vencer em '||CURRENT_DATE - A.validade_cnh||' dias'
+			WHEN F.data_validade < CURRENT_DATE + 90 THEN 'CNH a vencer em '||F.data_validade - CURRENT_DATE||' dias'
 			ELSE 'CNH regular'
 		END AS situacao_cnh
 FROM 	motorista A
 LEFT JOIN envolve B ON B.id_motorista = A.id_motorista
 LEFT JOIN recebe  C ON C.id_motorista = A.id_motorista
 LEFT JOIN multa  D ON D.id_multa = C.id_multa
-GROUP BY A.id_motorista, A.nome, A.validade_cnh
+JOIN 	possui E ON A.id_motorista = E.id_motorista
+JOIN	cnh F ON E.id_cnh = F.id_cnh
+GROUP BY A.id_motorista, A.nome, F.data_validade 
 ORDER BY total_pontos_multa DESC NULLS LAST;
