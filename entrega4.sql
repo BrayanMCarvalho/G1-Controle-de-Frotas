@@ -108,11 +108,13 @@ CREATE TABLE treinamento (
 CREATE TABLE motorista (
     id_motorista SERIAL PRIMARY KEY,
     id_endereco INT,
+    id_cnh INT,
     nome VARCHAR(255),
     cpf CHAR(11),
     data_nascimento DATE,
     telefone VARCHAR(20),
-    status VARCHAR(50)
+    status VARCHAR(50),
+    FOREIGN KEY (id_cnh) REFERENCES cnh(id_cnh)
 );
 
 CREATE TABLE rota (
@@ -198,14 +200,6 @@ CREATE TABLE participacao_treinamento (
     resultado VARCHAR(100),
     data_conclusao DATE,
     PRIMARY KEY (id_treinamento, id_motorista)
-);
-
-CREATE TABLE possui (
-    id_cnh INT,
-    id_motorista INT,
-    PRIMARY KEY (id_cnh, id_motorista),
-    FOREIGN KEY (id_cnh) REFERENCES cnh(id_cnh),
-    FOREIGN KEY (id_motorista) REFERENCES motorista(id_motorista)
 );
 
 CREATE TABLE realiza (
@@ -390,17 +384,17 @@ INSERT INTO treinamento (carga_horaria, descricao, nome) VALUES
 (4,  'Técnicas de comunicação e atendimento ao cliente',              'Relacionamento com o Cliente'),
 (6,  'Gestão do tempo e planejamento de jornada do motorista',        'Gestão de Jornada');
 
-INSERT INTO motorista (id_endereco, nome, cpf, data_nascimento, telefone, status) VALUES
-(NULL, 'Carlos Eduardo Souza',    '12345678901', '1985-06-15', '(35) 99801-2345', 'Ativo'),
-(NULL, 'Marcos Antônio Pereira',  '23456789012', '1979-11-22', '(35) 99802-3456', 'Ativo'),
-(NULL, 'José Roberto Lima',       '34567890123', '1990-03-08', '(35) 99803-4567', 'Ativo'),
-(NULL, 'Anderson Luís Ferreira',  '45678901234', '1983-09-17', '(35) 99804-5678', 'Afastado'),
-(NULL, 'Ricardo Gomes da Silva',  '56789012345', '1975-01-30', '(35) 99805-6789', 'Ativo'),
-(NULL, 'Fábio Henrique Rocha',    '67890123456', '1988-07-04', '(35) 99806-7890', 'Ativo'),
-(NULL, 'Leandro Aparecido Costa', '78901234567', '1992-12-19', '(35) 99807-8901', 'Ativo'),
-(NULL, 'Paulo César Martins',     '89012345678', '1980-04-25', '(35) 99808-9012', 'Ativo'),
-(NULL, 'Rogério de Oliveira',     '90123456789', '1977-08-11', '(35) 99809-0123', 'Inativo'),
-(NULL, 'Bruno Henrique Alves',    '01234567890', '1995-02-28', '(35) 99810-1234', 'Ativo');
+INSERT INTO motorista (id_endereco, nome, cpf, data_nascimento, telefone, status, id_cnh) VALUES
+(NULL, 'Carlos Eduardo Souza',    '12345678901', '1985-06-15', '(35) 99801-2345', 'Ativo',    1),
+(NULL, 'Marcos Antônio Pereira',  '23456789012', '1979-11-22', '(35) 99802-3456', 'Ativo',    2),
+(NULL, 'José Roberto Lima',       '34567890123', '1990-03-08', '(35) 99803-4567', 'Ativo',    3),
+(NULL, 'Anderson Luís Ferreira',  '45678901234', '1983-09-17', '(35) 99804-5678', 'Afastado', 4),
+(NULL, 'Ricardo Gomes da Silva',  '56789012345', '1975-01-30', '(35) 99805-6789', 'Ativo',    5),
+(NULL, 'Fábio Henrique Rocha',    '67890123456', '1988-07-04', '(35) 99806-7890', 'Ativo',    6),
+(NULL, 'Leandro Aparecido Costa', '78901234567', '1992-12-19', '(35) 99807-8901', 'Ativo',    7),
+(NULL, 'Paulo César Martins',     '89012345678', '1980-04-25', '(35) 99808-9012', 'Ativo',    8),
+(NULL, 'Rogério de Oliveira',     '90123456789', '1977-08-11', '(35) 99809-0123', 'Inativo',  9),
+(NULL, 'Bruno Henrique Alves',    '01234567890', '1995-02-28', '(35) 99810-1234', 'Ativo',    10);
 
 INSERT INTO rota (id_endereco_origem, id_endereco_destino, tempo_estimado, distancia) VALUES
 (NULL, NULL, '02:30:00', 180.5),
@@ -495,10 +489,6 @@ INSERT INTO participacao_treinamento (id_treinamento, id_motorista, resultado, d
 (4, 8, 'Aprovado',   '2025-03-15'),
 (5, 9, 'Reprovado',  '2025-04-10'),
 (5, 10,'Aprovado',   '2025-04-10');
-
-INSERT INTO possui (id_cnh, id_motorista) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
-(6, 6), (7, 7), (8, 8), (9, 9), (10, 10);
 
 INSERT INTO realiza (id_motorista, id_viagem) VALUES
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
@@ -618,16 +608,15 @@ SELECT 	A.nome,
 		COUNT(DISTINCT B.id_ocorrencia) AS total_ocorrencias,
 		COUNT(DISTINCT C.id_multa)      AS total_multas,
 		SUM(D.pontos)                  AS total_pontos_multa,
-		F.data_validade,
+		E.data_validade,
 		CASE
-			WHEN F.data_validade < CURRENT_DATE + 90 THEN 'CNH a vencer em '||F.data_validade - CURRENT_DATE||' dias'
+			WHEN E.data_validade < CURRENT_DATE + 90 THEN 'CNH a vencer em '||E.data_validade - CURRENT_DATE||' dias'
 			ELSE 'CNH regular'
 		END AS situacao_cnh
 FROM 	motorista A
 LEFT JOIN envolve B ON B.id_motorista = A.id_motorista
 LEFT JOIN recebe  C ON C.id_motorista = A.id_motorista
 LEFT JOIN multa  D ON D.id_multa = C.id_multa
-JOIN 	possui E ON A.id_motorista = E.id_motorista
-JOIN	cnh F ON E.id_cnh = F.id_cnh
-GROUP BY A.id_motorista, A.nome, F.data_validade 
+JOIN	cnh E ON A.id_cnh = E.id_cnh
+GROUP BY A.id_motorista, A.nome, E.data_validade 
 ORDER BY total_pontos_multa DESC NULLS LAST;
