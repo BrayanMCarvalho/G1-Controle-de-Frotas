@@ -1,18 +1,18 @@
 ---------------
 -- DDL
 ---------------
-CREATE TABLE modelo (
-    id_modelo SERIAL PRIMARY KEY,
-    nome_modelo VARCHAR(255),
-    tipo_combustivel VARCHAR(50)
-);
-
 CREATE TABLE marca (
     id_marca SERIAL PRIMARY KEY,
-    id_modelo INT,
     pais_origem VARCHAR(100),
-    nome_marca VARCHAR(100),
-    FOREIGN KEY (id_modelo) REFERENCES modelo(id_modelo)
+    nome_marca VARCHAR(100)
+);
+
+CREATE TABLE modelo (
+    id_modelo SERIAL PRIMARY KEY,
+  	id_marca INT,
+    nome_modelo VARCHAR(255),
+    tipo_combustivel VARCHAR(50),
+  	FOREIGN KEY (id_marca) REFERENCES marca(id_marca)
 );
 
 CREATE TABLE categoria (
@@ -249,29 +249,29 @@ CREATE TABLE utiliza (
 -- DML
 ---------------
 
-INSERT INTO modelo (nome_modelo, tipo_combustivel) VALUES
-('Sprinter 415', 'Diesel'),
-('Daily 35S14', 'Diesel'),
-('Master L2H2', 'Diesel'),
-('Transit Custom', 'Diesel'),
-('Boxer 2.0', 'Diesel'),
-('Ducato Cargo', 'Diesel'),
-('Vito 116 CDI', 'Diesel'),
-('Crafter 35', 'Diesel'),
-('Trafic L1H1', 'Diesel'),
-('Jumper Furgão', 'Diesel');
+INSERT INTO marca (pais_origem, nome_marca) VALUES
+('Alemanha', 'Mercedes-Benz'),
+('Itália',   'Iveco'),
+('França',   'Renault'),
+('Alemanha', 'Ford'),
+('França',   'Peugeot'),
+('Itália',   'Fiat'),
+('Alemanha', 'Mercedes-Benz'),
+('Alemanha', 'Volkswagen'),
+('França',   'Renault'),
+('França',   'Citroën');
 
-INSERT INTO marca (id_modelo, pais_origem, nome_marca) VALUES
-(1,  'Alemanha', 'Mercedes-Benz'),
-(2,  'Itália',   'Iveco'),
-(3,  'França',   'Renault'),
-(4,  'Alemanha', 'Ford'),
-(5,  'França',   'Peugeot'),
-(6,  'Itália',   'Fiat'),
-(7,  'Alemanha', 'Mercedes-Benz'),
-(8,  'Alemanha', 'Volkswagen'),
-(9,  'França',   'Renault'),
-(10, 'França',   'Citroën');
+INSERT INTO modelo (nome_modelo, tipo_combustivel, id_marca) VALUES
+('Sprinter 415', 'Diesel',1),
+('Daily 35S14', 'Diesel',2),
+('Master L2H2', 'Diesel',3),
+('Transit Custom', 'Diesel',4),
+('Boxer 2.0', 'Diesel',5),
+('Ducato Cargo', 'Diesel',6),
+('Vito 116 CDI', 'Diesel',7),
+('Crafter 35', 'Diesel',8),
+('Trafic L1H1', 'Diesel',9),
+('Jumper Furgão', 'Diesel',10);
 
 INSERT INTO categoria (id_modelo, nome_categoria) VALUES
 (1,  'Furgão de Carga'),
